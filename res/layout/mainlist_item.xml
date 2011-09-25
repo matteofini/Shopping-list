@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:orientation="vertical">
+	<RelativeLayout android:id="@+id/relativeLayout1"
+		android:layout_height="wrap_content" android:layout_width="match_parent" android:longClickable="false">
+		<TextView android:id="@+id/item_title" android:textSize="20sp"
+			android:layout_alignParentTop="true" android:layout_height="wrap_content"
+			android:layout_width="match_parent" android:focusable="true" android:contentDescription="titolo della nota" android:longClickable="false"></TextView>
+		<TextView android:id="@+id/item_date" android:layout_below="@+id/item_title"
+			android:layout_height="wrap_content" android:layout_width="match_parent"
+			android:textSize="18sp" android:focusable="true" android:contentDescription="data di creazione della nota" android:longClickable="false"></TextView>
+		<TextView android:id="@+id/item_summary"
+			android:textStyle="italic" android:layout_below="@+id/item_date"
+			android:layout_height="wrap_content" android:layout_width="match_parent"
+			android:paddingLeft="10dp" android:focusable="true" android:contentDescription="anteprima della nota" android:longClickable="false"></TextView>
+	</RelativeLayout>
+	<RelativeLayout android:id="@+id/relativeLayout2"
+		android:layout_height="wrap_content" android:layout_width="match_parent"
+		android:paddingTop="10dp" android:gravity="center" android:longClickable="false">
+		<ImageButton android:src="@drawable/view_mdpi" android:id="@+id/button_view"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true" android:focusable="true" android:contentDescription="leggi"></ImageButton>
+		<ImageButton android:src="@drawable/edit_mdpi" android:id="@+id/button_edit"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_centerHorizontal="true" android:focusable="true" android:contentDescription="modifica"></ImageButton>
+		<ImageButton android:layout_width="wrap_content"
+			android:src="@drawable/delete_mdpi" android:layout_height="wrap_content"
+			android:id="@+id/button_del" android:layout_alignParentRight="true" android:focusable="true" android:contentDescription="elimina"></ImageButton>
+	</RelativeLayout>
+</LinearLayout>

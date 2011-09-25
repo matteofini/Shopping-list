@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent" android:orientation="vertical">
+    <LinearLayout android:id="@+id/linearLayout1" android:layout_gravity="right" android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <Button android:id="@+id/button_setdate" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/button_setdate"></Button>
+        <TextView  android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/label_setdate"></TextView>
+    </LinearLayout>
+    <LinearLayout android:id="@+id/linearLayout2" android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <Button android:id="@+id/button_settime" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/button_settime"></Button>
+        <TextView  android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/label_settime" android:layout_gravity="right"></TextView>
+    </LinearLayout>
+    <LinearLayout android:id="@+id/linearLayout3" android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+       <Button android:text="OK" android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/button_setdatetimeOK"></Button>
+    </LinearLayout>
+</LinearLayout>

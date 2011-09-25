@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" android:layout_height="match_parent"
+	android:isScrollContainer="true">
+	<TextView android:layout_height="wrap_content"
+		android:textColor="#c0c0c0" android:textSize="22sp"
+		android:layout_width="fill_parent" android:id="@+id/showlist_title"
+		android:gravity="center" android:layout_alignParentTop="true"></TextView>
+	<TextView android:layout_height="wrap_content"
+		android:layout_width="match_parent" android:id="@+id/showlist_date"
+		android:gravity="center" android:layout_below="@+id/showlist_title"
+		android:layout_alignLeft="@+id/showlist_title"
+		android:layout_alignRight="@+id/showlist_title"></TextView>
+	<ScrollView android:layout_below="@+id/showlist_date"
+		android:layout_alignLeft="@+id/showlist_date"
+		android:layout_alignRight="@+id/showlist_date" android:id="@+id/ScrollView1"
+		android:layout_width="match_parent" android:layout_height="match_parent" android:layout_above="@+id/button_zoomin">
+		<TextView android:textSize="18sp" android:id="@+id/showlist_content"
+			android:layout_width="match_parent" android:layout_height="match_parent"></TextView>
+	</ScrollView>
+	<Button android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true" android:layout_width="match_parent"
+		android:drawableLeft="@drawable/calendar" android:id="@+id/button_calendar"
+		android:text="@string/button_calendar"></Button>
+	<Button android:layout_width="wrap_content" android:text="-" android:layout_height="wrap_content"
+		android:layout_above="@+id/button_calendar"
+		android:layout_alignParentLeft="true" android:id="@+id/button_zoomin"></Button>
+	<Button android:layout_width="wrap_content" android:text="+" android:layout_height="wrap_content"
+		android:layout_below="@+id/ScrollView1"
+		android:layout_alignParentRight="true" android:id="@+id/button_zoomout"></Button>
+</RelativeLayout>
