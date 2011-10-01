@@ -2,8 +2,6 @@ package com.matteofini.shoppinglist;
 
 import java.util.Calendar;
 
-import com.matteofini.shoppinglist.R;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -13,6 +11,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -52,7 +51,9 @@ public class ShowList extends Activity {
         	tv_title.setText(db.getListTitle(rowid).getString(0));
         	CharSequence str = DateFormat.format("MM/dd/yy h:mmaa", db.getListDate(rowid).getLong(0));
         	tv_date.setText(str);
-        	tv_content.setText(c.getString(0));
+        	tv_content.setText(Html.fromHtml(c.getString(0)));
+//        	tv_content.setText(Html.fromHtml("<a href='http://www.google.com' title='gogole link'>link</a><b>bold</b><i>italic</i><strike>stroke</strike><t>tttttt</t>"));
+//			tv_content.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         	setContentView(rl);
         	
         	View b_cal = rl.findViewById(R.id.button_calendar);
@@ -71,6 +72,17 @@ public class ShowList extends Activity {
     				return true;
     			}
     		});
+        	findViewById(R.id.button_edit2).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent i = new Intent();
+					i.setComponent(new ComponentName(ShowList.this, EditList.class));
+					i.putExtra("id", rowid);
+					startActivity(i);
+					finish();
+				}
+			});
+        	/*
         	rl.findViewById(R.id.button_zoomin).setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -85,6 +97,7 @@ public class ShowList extends Activity {
 					tv.setTextSize(tv.getTextSize()-2);
 				}
 			});
+			*/
         	c.close();
         	db.close();
         	

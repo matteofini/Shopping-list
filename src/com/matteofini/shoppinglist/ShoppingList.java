@@ -1,7 +1,5 @@
 package com.matteofini.shoppinglist;
 
-import com.matteofini.shoppinglist.R;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
@@ -12,6 +10,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,18 +25,22 @@ public class ShoppingList extends ListActivity {
 	
 	private static final int ADD_TITLE_DIALOG = 0;
 	private Cursor mCursor;
+	private Vibrator VV;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
+        
+        VV = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        
         View b = findViewById(R.id.button_addlist);
         b.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				showDialog(ADD_TITLE_DIALOG);
+				VV.vibrate(50);
 			}
 		});
         b.setOnLongClickListener(new OnLongClickListener() {
@@ -53,7 +56,7 @@ public class ShoppingList extends ListActivity {
         mCursor = shoppingDB.getShoppingList();
         startManagingCursor(mCursor);
         //System.out.println("\t count: "+c.getCount());
-        SimpleCursorAdapter sca = new MyAdapter(this, R.layout.mainlist_item, mCursor, new String[]{"title", "date", "summary"}, new int[]{R.id.item_title, R.id.item_date, R.id.item_summary});
+        SimpleCursorAdapter sca = new MyAdapter(this, R.layout.item, mCursor, new String[]{"title", "date", "summary"}, new int[]{R.id.item_title, R.id.item_date, R.id.item_summary});
         setListAdapter(sca);   
     } 
 
@@ -69,10 +72,10 @@ public class ShoppingList extends ListActivity {
     	
     	@Override
     	public View getView(final int position, View convertView, ViewGroup parent) {
-     		View v = getLayoutInflater().inflate(R.layout.mainlist_item, null);
+     		View v = getLayoutInflater().inflate(R.layout.item, null);
     		View b_view = v.findViewById(R.id.button_view);
     		View b_edit = v.findViewById(R.id.button_edit);
-    		View b_del = v.findViewById(R.id.button_del);
+    		View b_del = v.findViewById(R.id.button_delete);
     		
     		final Cursor c = getCursor();
     		c.moveToPosition(position);
@@ -98,6 +101,7 @@ public class ShoppingList extends ListActivity {
     			@Override
 				public void onClick(View v) {
 					view(id);
+					VV.vibrate(50);
 				}
 			};
 			b_view.setOnClickListener(view_ocl);
@@ -106,6 +110,7 @@ public class ShoppingList extends ListActivity {
     			@Override
 				public void onClick(View v) {
 					edit(id);
+					VV.vibrate(50);
 				}
 			};
 			b_edit.setOnClickListener(edit_ocl);
@@ -114,6 +119,7 @@ public class ShoppingList extends ListActivity {
     			@Override
 				public void onClick(View v) {
 					delete(id);
+					VV.vibrate(50);
 				}
 			};
     		b_del.setOnClickListener(del_ocl);
@@ -141,9 +147,10 @@ public class ShoppingList extends ListActivity {
 			});
     		
     		if(position%2==0)
-    			v.setBackgroundColor(Color.DKGRAY);
+    			v.setBackgroundColor(getResources().getColor(R.color.VeryLightGrey));
     		else
-    			v.setBackgroundColor(Color.GRAY);
+    			v.setBackgroundColor(Color.WHITE);
+    		
     		return v;
     	}
     	
@@ -168,7 +175,7 @@ public class ShoppingList extends ListActivity {
 	        Toast.makeText(getApplicationContext(), getResources().getString(R.string.list_deleted), Toast.LENGTH_LONG).show();
 	        shoppingDB.close();
 	        mCursor.requery();
-	        setListAdapter(new MyAdapter(ShoppingList.this, R.layout.mainlist_item, mCursor, new String[]{"title", "date", "summary"}, new int[]{R.id.item_title, R.id.item_date, R.id.item_summary}));
+	        setListAdapter(new MyAdapter(ShoppingList.this, R.layout.item, mCursor, new String[]{"title", "date", "summary"}, new int[]{R.id.item_title, R.id.item_date, R.id.item_summary}));
     	}
     	
     }
@@ -176,22 +183,21 @@ public class ShoppingList extends ListActivity {
     
     @Override
     protected Dialog onCreateDialog(int id) {
-    	Dialog d = null;
     	if(id==0){
     		final View ll = getLayoutInflater().inflate(R.layout.dialog_addtitle, null);
-			AlertDialog.Builder dialb = new AlertDialog.Builder(ShoppingList.this);
-			dialb.setView(ll);
-			dialb.setIcon(R.drawable.alert_dialog_icon);
-			dialb.setTitle(getResources().getString(R.string.dialog_addtitle_title));
-			dialb.setCancelable(true);
-			dialb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+    		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+    		adb.setView(ll);
+    		AlertDialog d = adb.create();
+			d.setTitle(getResources().getString(R.string.dialog_addtitle_title));
+			d.setCancelable(true);
+			d.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel), new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					dialog.cancel();
 				}
 			});
 			
-			dialb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			d.setButton(DialogInterface.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					EditText edit = (EditText) ll.findViewById(R.id.edit_addtitle);
@@ -203,7 +209,7 @@ public class ShoppingList extends ListActivity {
 						db.close();
 						Toast.makeText(getApplicationContext(), getResources().getString(R.string.list_created), Toast.LENGTH_LONG).show();
 						mCursor.requery();
-						setListAdapter(new MyAdapter(ShoppingList.this, R.layout.mainlist_item, mCursor, new String[]{"title", "date", "summary"}, new int[]{R.id.item_title, R.id.item_date, R.id.item_summary}));
+						setListAdapter(new MyAdapter(ShoppingList.this, R.layout.item, mCursor, new String[]{"title", "date", "summary"}, new int[]{R.id.item_title, R.id.item_date, R.id.item_summary}));
 						Intent i = new Intent();
 						i.putExtra("id", id);
 						i.setComponent(new ComponentName("com.matteofini.shoppinglist", "com.matteofini.shoppinglist.EditList"));
@@ -215,8 +221,9 @@ public class ShoppingList extends ListActivity {
 					}
 				}
 			});
-			d = dialb.create();
+			return d;
     	}
-		return d;
+    	else
+    		return null;
     }
 }

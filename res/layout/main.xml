@@ -1,28 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent" android:layout_height="match_parent"
-	android:isScrollContainer="false">
-	<TextView android:text="@string/label_addlist"
-		android:layout_width="match_parent" android:id="@+id/label_addlist"
-		android:layout_height="wrap_content" android:gravity="center"
-		android:layout_alignParentTop="true" android:isScrollContainer="false"
-		android:focusable="true" android:focusableInTouchMode="true"
-		android:contentDescription="@string/label_addlist"></TextView>
-	<ImageButton android:src="@drawable/add_mdpi" android:id="@+id/button_addlist"
+	android:layout_width="match_parent" android:layout_height="match_parent">
+	<ListView android:layout_height="wrap_content"
+		android:layout_width="match_parent" android:id="@android:id/list"
+		android:layout_below="@+id/button_addlist" android:layout_above="@+id/label_help"
+		android:focusable="true" android:contentDescription="lista delle note">
+	    <!-- Preview: listitem=@layout/item -->
+	</ListView>
+	<TextView android:gravity="center" android:id="@+id/label_help"
 		android:layout_height="wrap_content" android:layout_width="match_parent"
-		android:layout_below="@+id/label_addlist" android:layout_alignLeft="@+id/label_addlist"
-		android:layout_alignRight="@+id/label_addlist"
-		android:isScrollContainer="false" android:focusable="true"
-		android:focusableInTouchMode="true" android:contentDescription="aggiungi una nuova nota"></ImageButton>
-	<ListView android:id="@+id/android:list" android:paddingTop="20sp"
-		android:layout_height="wrap_content" android:layout_width="match_parent"
-		android:layout_below="@+id/button_addlist" android:layout_alignLeft="@+id/button_addlist"
-		android:layout_alignRight="@+id/button_addlist" android:layout_above="@+id/label_help"
-		android:isScrollContainer="true" android:focusable="true"
-		android:focusableInTouchMode="true"></ListView>
-	<TextView android:gravity="center" android:text="@string/help_help"
-		android:id="@+id/label_help" android:layout_height="wrap_content"
-		android:layout_width="match_parent" android:isScrollContainer="false"
-		android:layout_alignParentBottom="true" android:keepScreenOn="true"
-		android:textSize="18sp"></TextView>
+		android:text="@string/help_help" android:layout_alignParentBottom="true"
+		android:layout_alignParentLeft="true" android:focusable="true"></TextView>
+	<ImageButton android:src="@android:drawable/ic_menu_add"
+		android:background="@android:color/transparent" android:id="@+id/button_addlist"
+		android:layout_height="wrap_content" android:layout_width="wrap_content"
+		android:layout_below="@+id/linearLayout1_ref"
+		android:layout_centerHorizontal="true"></ImageButton>
+	<include layout="@layout/actionbar" android:id="@+id/linearLayout1_ref"
+		android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:layout_alignParentTop="true" android:layout_alignParentLeft="true" />
 </RelativeLayout>
