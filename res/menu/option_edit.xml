@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<group>
+		<item android:orderInCategory="1" android:title="Insert Text" android:titleCondensed="Text"
+			android:alphabeticShortcut="t" android:numericShortcut="1"
+			android:icon="@android:drawable/ic_menu_edit"/>
+		<item android:orderInCategory="2" android:title="Insert Picture" android:titleCondensed="Picture"
+			android:alphabeticShortcut="p" android:numericShortcut="2"
+			android:icon="@android:drawable/ic_menu_camera" />
+		<item android:orderInCategory="3" android:title="Insert Location" android:titleCondensed="Location"
+			android:alphabeticShortcut="l" android:numericShortcut="3"
+			android:icon="@android:drawable/ic_menu_mylocation" />
+		<item android:orderInCategory="4" android:title="Insert Voice recording"
+			android:titleCondensed="Voice" android:alphabeticShortcut="v"
+			android:numericShortcut="4" android:icon="@android:drawable/ic_btn_speak_now"/>
+	</group>
+	<group android:visible="false">
+		<item android:title="Bold" android:titleCondensed="B" android:menuCategory="alternative" />	
+		<item android:title="Italic" android:titleCondensed="I" android:menuCategory="alternative" />	
+		<item android:title="Strike" android:titleCondensed="S" android:menuCategory="alternative" />	
+		<item android:title="Underline" android:titleCondensed="U" android:menuCategory="alternative" />	
+	</group>	
+</menu>

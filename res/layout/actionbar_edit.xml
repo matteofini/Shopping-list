@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="wrap_content" android:layout_width="match_parent"
+	android:background="@color/LightSkyBlue" android:id="@+id/actionbar_edit">
+	<TextView android:textAppearance="?android:attr/textAppearanceSmall"
+		android:layout_height="wrap_content" android:layout_width="wrap_content"
+		android:text="@string/app_name" android:layout_centerVertical="true"
+		android:layout_alignParentLeft="true" android:id="@+id/label_appname"></TextView>
+	<Button android:layout_width="48dp" android:text="S" android:layout_height="wrap_content" android:id="@+id/strike" android:layout_alignParentTop="true" android:layout_alignParentRight="true"></Button>
+</RelativeLayout>
+

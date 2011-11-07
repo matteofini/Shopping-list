@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="wrap_content"
+	android:layout_width="match_parent"
+	android:background="@color/LightSkyBlue" android:id="@+id/actionbar">
+	<TextView android:textAppearance="?android:attr/textAppearanceSmall"
+		android:layout_height="wrap_content" android:layout_width="wrap_content"
+		android:text="@string/app_name" android:layout_centerVertical="true"
+		android:layout_alignParentLeft="true" android:id="@+id/label_appname"></TextView>
+	<ImageButton android:src="@android:drawable/ic_menu_search"
+		android:layout_height="48dp"
+		android:layout_width="48dp" android:layout_alignParentTop="true"
+		android:layout_alignParentRight="true" android:background="@android:color/transparent" android:id="@+id/button_searchlist"></ImageButton>
+</RelativeLayout>
+

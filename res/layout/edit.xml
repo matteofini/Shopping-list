@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" android:layout_height="fill_parent"
+	android:gravity="top"
+	android:isScrollContainer="true" android:focusable="true"
+	android:focusableInTouchMode="true">
+	<RelativeLayout android:layout_height="wrap_content" android:id="@+id/relativeLayout1" android:layout_alignParentBottom="true" android:layout_alignParentLeft="true" android:layout_width="match_parent">
+		<ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/ic_launcher" android:layout_alignParentTop="true" android:layout_alignParentLeft="true" android:id="@+id/button_save"></ImageButton>
+		<ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/ic_launcher" android:layout_alignParentTop="true" android:layout_alignParentRight="true" android:id="@+id/button_cancel"></ImageButton>
+	</RelativeLayout>
+	<include android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:id="@+id/include1" layout="@layout/actionbar"
+		android:layout_alignParentTop="true" android:layout_alignParentLeft="true"></include>
+
+	<EditText android:layout_height="wrap_content" android:id="@+id/editlist_title"
+		android:maxLines="1" android:layout_below="@+id/include1"
+		android:layout_alignParentLeft="true" android:layout_width="match_parent"></EditText>
+	<LinearLayout android:id="@+id/editlist_content"
+		android:focusable="true" android:orientation="vertical"
+		android:layout_below="@+id/editlist_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_above="@+id/relativeLayout1">
+		<TextView android:textAppearance="?android:attr/textAppearanceMedium"
+			android:text="Clicca sul tasto Menu per aggiungere il contenuto"
+			android:id="@+id/editlist_content_hint" android:gravity="center_vertical|center_horizontal"
+			android:layout_width="match_parent" android:layout_height="match_parent"></TextView>
+	</LinearLayout>
+	
+</RelativeLayout>

@@ -1,83 +1,94 @@
 package com.matteofini.shoppinglist;
 
-import java.awt.font.TextAttribute;
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.net.URL;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.DialogInterface.OnDismissListener;
 import android.database.Cursor;
 import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.graphics.Paint.Style;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
-import android.text.Selection;
-import android.text.SpanWatcher;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextPaint;
 import android.text.TextWatcher;
-import android.text.Html.TagHandler;
-import android.text.method.LinkMovementMethod;
-import android.text.style.CharacterStyle;
-import android.text.style.ClickableSpan;
-import android.text.style.StrikethroughSpan;
-import android.text.style.StyleSpan;
-import android.text.style.TextAppearanceSpan;
-import android.text.style.URLSpan;
-import android.text.style.UnderlineSpan;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
-import android.widget.ToggleButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class EditList extends Activity {
+	private LocationManager LM; 
+	private Note mNote;
+	
+	private LocationListener loclis = new LocationListener() {
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+			System.out.println("\t\t"+provider+" has changed status to "+status);
+		}
+		@Override
+		public void onProviderEnabled(String provider) {
+			System.out.println("\t\t"+provider+" enabled");
+		}
+		@Override
+		public void onProviderDisabled(String provider) {
+			System.out.println("\t\t"+provider+" disabled");
+		}
+		@Override
+		public void onLocationChanged(Location location) {
+			System.out.println("\t\t"+location.getLatitude()+" "+location.getLongitude());
+			View root = getWindow().getDecorView();
+			//ExpandableListView explist = (ExpandableListView) root.findViewById(R.id.attachments);
+		}
+	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);		
+		LM = (LocationManager) getSystemService(LOCATION_SERVICE);
+		mNote = new Note();
+		
 		final long rowid = getIntent().getExtras().getLong("id");
 		ShoppingDb db = new ShoppingDb(EditList.this);
 		db.open();
-		
 		final View ll = getLayoutInflater().inflate(R.layout.edit,null);
+		//title
+		mNote.setTitle(db.getListTitle(rowid).getString(0));
     	EditText title = (EditText) ll.findViewById(R.id.editlist_title);
-    	title.setText(db.getListTitle(rowid).getString(0));
-    	
-    	final EditText content = (EditText) ll.findViewById(R.id.editlist_content);
+    	title.setText(mNote.getTitle());
+    	//text content
     	final Cursor c = db.getListContent(rowid);
     	if(c.getCount()!=0){
     		String str = db.getListContent(rowid).getString(0);
     		if(str!=null){
-    			Spanned spanned = Html.fromHtml(str);
-    			content.setText(spanned);
+    			mNote.setText(Html.fromHtml(str));
+    			LinearLayout content = (LinearLayout) ll.findViewById(R.id.editlist_content);
+    			content.removeView(ll.findViewById(R.id.editlist_content_hint));
+    			EditText textEdit = new EditText(EditList.this);
+    			textEdit.setText(mNote.getText());
+    			textEdit.setLines(6);
+    			content.addView(textEdit);
     		}
-    		else
-    			content.setText(str);
-    		//content.setText(db.getListContent(rowid).getString(0));
     	}
     	c.close();
     	
     	View b_save = ll.findViewById(R.id.button_save);
     	View b_cancel = ll.findViewById(R.id.button_cancel);
-    	Button b_strike = (Button) ll.findViewById(R.id.strike);
-    	b_strike.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
     	
+    	/*
     	ll.findViewById(R.id.bold).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -193,16 +204,12 @@ public class EditList extends Activity {
 				}
 			}
 		});  
-    	
+    	/*
     	ll.findViewById(R.id.link).setOnClickListener(new OnClickListener() {
     		@Override
 			public void onClick(View v) {
 				final int start = content.getSelectionStart();
 				final int end = content.getSelectionEnd();
-				if(start==end){
-					Toast.makeText(EditList.this, "Nessun testo selezionato", Toast.LENGTH_LONG).show();
-				}
-				else{
 					URLSpan[] spans = content.getText().getSpans(start, end, URLSpan.class);
 					if(spans.length!=0){
 						for(int i=0;i<spans.length;i++){
@@ -224,9 +231,11 @@ public class EditList extends Activity {
 							private void setLink(Editable url, int start, int end) {
 								View ll = getLayoutInflater().inflate(R.layout.edit,null);
 								URLSpan urlspan = new URLSpan(url.toString());
-								content.setMovementMethod(LinkMovementMethod.getInstance());
-						    	//EditText content = (EditText) ll.findViewById(R.id.editlist_content);
-								content.getText().setSpan(urlspan, content.getSelectionStart(), content.getSelectionEnd(), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
+								if(start==end){
+									content.getText().insert(content.getSelectionEnd(), Html.fromHtml("<a href='"+url+"'>"+url+"</a>"));
+								}
+								else
+									content.getText().setSpan(urlspan, content.getSelectionStart(), content.getSelectionEnd(), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
 								System.out.println("\t attached span from "+start+" to "+end);
 								
 							}
@@ -236,17 +245,51 @@ public class EditList extends Activity {
 					}
 					System.out.println(Html.toHtml(content.getText()));
 				}
-			}
 		});  
-    	  	
+    	
+    	ll.findViewById(R.id.photo).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v){
+				Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				startActivityForResult(i, 300);
+			}
+		});
+
+    	ll.findViewById(R.id.gps).setOnClickListener(new OnClickListener() {
+    		@Override
+    		public void onClick(View v) {
+    			//List<String> providers = LM.getAllProviders();
+    			if(!LM.isProviderEnabled("network") && !LM.isProviderEnabled("gps")){
+    				Toast.makeText(EditList.this, "Abilita una origine dati (rete o gps) per 'La mia posizione' nelle impostazioni di sistema", 2).show();
+    			}
+    			else{
+    				if(LM.isProviderEnabled("network")){
+    					ConnectivityManager CM = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+    					NetworkInfo info = CM.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+    					if(!info.isConnected()){
+    						Toast.makeText(EditList.this, "Non sei connesso a nessuna rete WIFI. Il telefono può essere fuori portata.", 2).show();
+    						//LM.getLastKnownLocation("network");	//TODO
+    					}
+						else
+    						LM.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loclis);
+    				}
+    				else
+    					LM.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, loclis);
+    			}
+			}
+    	});
+    	*/
     	b_save.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				EditText edit = (EditText) ll.findViewById(R.id.editlist_content);
-				Bundle b = new Bundle();
-				b.putString("content", Html.toHtml(edit.getText()));
-				b.putLong("id", rowid);
-				showDialog(0, b);
+				LinearLayout content = (LinearLayout) getWindow().getDecorView().findViewById(R.id.editlist_content);
+				EditText edit = (EditText) content.findViewById(R.id.edit_textcontent);
+				if(edit!=null){
+					Bundle b = new Bundle();
+					b.putString("content", Html.toHtml(edit.getText()));
+					b.putLong("id", rowid);
+					showDialog(0, b);
+				}
 			}
 		});
     	b_cancel.setOnClickListener(new OnClickListener() {
@@ -255,7 +298,6 @@ public class EditList extends Activity {
 				finish();
 			}
 		});
-    	
     	b_save.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
@@ -271,23 +313,62 @@ public class EditList extends Activity {
 			}
 		});
     	setContentView(ll);
+    	ll.requestFocus();
 	}
+	
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.option_edit, menu);
+		return true;
+	}
+	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getOrder()) {
+		case 1:
+			LinearLayout ll = (LinearLayout) getWindow().getDecorView().findViewById(R.id.editlist_content);
+			if(ll.findViewById(R.id.editlist_content_hint)!=null){
+				ll.removeView(ll.findViewById(R.id.editlist_content_hint));
+				EditText edit = (EditText) getLayoutInflater().inflate(R.layout.edit_textcontent, null);
+				ll.addView(edit);
+				edit.requestFocusFromTouch();
+				edit.requestFocus();
+			}
+			else{
+				ll.getChildAt(0).requestFocus();
+			}
+			break;
 
+		default:
+			break;
+		}
+		return true;
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		//super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode==300 && data!=null){
+			Uri uri = data.getData();
+			ImageView img = new ImageView(EditList.this);
+			img.setImageURI(uri);
+			//LinearLayout ll = (LinearLayout) getWindow().findViewById(R.id.attachments);
+			//ll.addView(img); 
+		}
+	}
 	
 	@Override
 	protected Dialog onCreateDialog(int id, final Bundle args) {
 		if(id==0){
 			AlertDialog.Builder adb = new AlertDialog.Builder(this);
-			
 			adb.setTitle(getResources().getString(R.string.ask_save))
 				.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						//SpannableStringBuilder content = SpannableStringBuilder.valueOf(args.getString("content"));
-						//SpannableStringBuilder content = SpannableStringBuilder.valueOf("<b>vaffa</b>");
 						ShoppingDb db = new ShoppingDb(EditList.this);
 						db.open();
-						//db.addListContent(args.getLong("id"), Html.toHtml(content));
 						db.addListContent(args.getLong("id"), args.getString("content"));
 						
 						Intent i = new Intent();
